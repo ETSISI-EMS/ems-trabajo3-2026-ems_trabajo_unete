@@ -21,10 +21,14 @@ import com.practica.genericas.Persona;
 import com.practica.genericas.PosicionPersona;
 import com.practica.lista.ListaContactos;
 
+
 public class ContactosCovid {
 	private Poblacion poblacion;
 	private Localizacion localizacion;
 	private ListaContactos listaContactos;
+	public static final String TIPO_PERSONA = "PERSONA";
+	public static final String TIPO_LOCALIZACION = "LOCALIZACION";
+
 
 	public ContactosCovid() {
 		this.poblacion = new Poblacion();
@@ -68,6 +72,9 @@ public class ContactosCovid {
 		}
 		String datas[] = dividirEntrada(data);
 		for (String linea : datas) {
+
+			procesarLinea(linea);
+			/*
 			String datos[] = this.dividirLineaData(linea);
 			if (!datos[0].equals("PERSONA") && !datos[0].equals("LOCALIZACION")) {
 				throw new EmsInvalidTypeException();
@@ -86,6 +93,8 @@ public class ContactosCovid {
 				this.localizacion.addLocalizacion(pp);
 				this.listaContactos.insertarNodoTemporal(pp);
 			}
+
+			 */
 		}
 	}
 
@@ -119,6 +128,8 @@ public class ContactosCovid {
 			while ((data = br.readLine()) != null) {
 				datas = dividirEntrada(data.trim());
 				for (String linea : datas) {
+					procesarLinea(linea);
+					/*
 					String datos[] = this.dividirLineaData(linea);
 					if (!datos[0].equals("PERSONA") && !datos[0].equals("LOCALIZACION")) {
 						throw new EmsInvalidTypeException();
@@ -138,6 +149,7 @@ public class ContactosCovid {
 						this.localizacion.addLocalizacion(pp);
 						this.listaContactos.insertarNodoTemporal(pp);
 					}
+					 */
 				}
 
 			}
@@ -305,4 +317,69 @@ public class ContactosCovid {
 		FechaHora fechaHora = new FechaHora(dia, mes, anio, minuto, segundo);
 		return fechaHora;
 	}
+	private void procesarLinea(String linea)
+			throws EmsInvalidTypeException,
+			EmsInvalidNumberOfDataException,
+			EmsDuplicatePersonException,
+			EmsDuplicateLocationException {
+
+		String[] datos = dividirLineaData(linea);
+		String tipo = datos[0];
+
+		validarTipo(tipo);
+
+		switch (tipo) {
+			case TIPO_PERSONA:
+				procesarPersona(datos);
+				break;
+
+			case TIPO_LOCALIZACION:
+				procesarLocalizacion(datos);
+				break;
+
+			default:
+				throw new EmsInvalidTypeException();
+		}
+	}
+
+	private void validarTipo(String tipo) throws EmsInvalidTypeException {
+		if (!TIPO_PERSONA.equals(tipo) && !TIPO_LOCALIZACION.equals(tipo)) {
+			throw new EmsInvalidTypeException();
+		}
+	}
+
+	private void procesarPersona(String[] datos)
+			throws EmsInvalidNumberOfDataException, EmsDuplicatePersonException {
+
+		validarNumeroDatos(
+				datos.length,
+				Constantes.MAX_DATOS_PERSONA,
+				"El número de datos para PERSONA es distinto de 8"
+		);
+
+		this.poblacion.addPersona(this.crearPersona(datos));
+	}
+
+	private void procesarLocalizacion(String[] datos)
+			throws EmsInvalidNumberOfDataException, EmsDuplicateLocationException {
+
+		validarNumeroDatos(
+				datos.length,
+				Constantes.MAX_DATOS_LOCALIZACION,
+				"El número de datos para LOCALIZACION es distinto de 6"
+		);
+
+		PosicionPersona pp = this.crearPosicionPersona(datos);
+		this.localizacion.addLocalizacion(pp);
+		this.listaContactos.insertarNodoTemporal(pp);
+	}
+
+	private void validarNumeroDatos(int actual, int esperado, String mensaje)
+			throws EmsInvalidNumberOfDataException {
+
+		if (actual != esperado) {
+			throw new EmsInvalidNumberOfDataException(mensaje);
+		}
+	}
+
 }
