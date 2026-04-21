@@ -6,3 +6,6 @@ En esta práctica vamos a simular que una consultora contrató a los alumnos de 
 
 Actualización en el README
 Segunda Actualización del README
+
+
+[![Build](https://github.com/ETSISI-EMS/ems-trabajo3-2026-ems_trabajo_unete/actions/workflows/main.yml/badge.svg)](https://github.com/ETSISI-EMS/ems-trabajo3-2026-ems_trabajo_unete/actions/workflows/main.yml)
