@@ -7,3 +7,4 @@ Edit del readme para que lance la ejecución del pipeline
 Segundo edit para generar green build
 Actualización del readme para ejecutar el pipeline configurado de sonarcube y que falle
 Actualización tras configurar el quality gate
+NUevo intento de configuración QG y QP
